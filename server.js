@@ -22,7 +22,14 @@ app.get('/todos', function (req, res) {
   if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'true') {
     filterTodos = _.where(filterTodos, {completed: true});
   } else if (queryParams.hasOwnProperty('completed') && queryParams.completed === 'false') {
-    filterTodos = _.where(filterTodos, {completed: true});
+    filterTodos = _.where(filterTodos, {completed: false});
+  }
+
+  if (queryParams.hasOwnProperty('q') && queryParams.q.length > 0) {
+    filterTodos = _.filter(filterTodos, function (todo) {
+      return todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase()) > -1;
+    });
+
   }
 
   res.json(filterTodos)
@@ -95,7 +102,7 @@ app.put('/todos/:id', function(req, res) {
 
   _.extend(matchedTodo, validAttributes);
   res.json(matchedTodo);
-})
+});
 
 app.listen(PORT, function() {
   console.log('Express listening on port ' + PORT + '!');
